@@ -1,0 +1,257 @@
+---
+title: "Final Project"
+author: "Leslie Alhakim"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1: Data Wrangling
+
+```{r data-wrangling}
+# Load necessary libraries
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(paletteer) 
+library(readr)
+
+# Load our dataset and explore the structure of the data
+movies <- read_csv("movies.csv")
+names(movies)
+head(movies) #let's see what the data looks like 
+
+# Cleaning time!
+df<- movies %>% mutate(month=word(released,1)) #take month info from released col
+df <- df %>% mutate(revenue = gross - budget) #calculate $$ revenue
+df <- df %>% select(-released, -runtime) #remove unnecessary cols
+names(df)
+head(df)
+```
+
+```{r save dataframe}
+# Save clean data
+write_csv(df, "CLEAN.csv")
+```
+
+## 2: Visualization Creation
+
+```{r ggplot2}
+# PLOT 1: Density Plot
+grouped <- df %>%
+  mutate(genre = fct_lump_n(as.factor(genre), n = 6)) #little did I know lump would be my new best friend
+#group 6 major movies using tidyverse
+
+p1 <- ggplot(data = grouped, aes(x = year)) +
+  geom_density(aes(colour = genre), alpha = 0.3, linewidth = .8) +
+  labs(
+    colour = "Genre",
+    x = "Year",
+    y = "Density",
+    title = "Prevalence in Major Movie Genres From 1980 to 2020"
+  ) +
+  theme_minimal() +
+  scale_colour_paletteer_d("MetBrewer::Austria")
+
+p1
+```
+This is a density plot of the six major movie genres from 1980 to 2020. I chose this plot because
+I thought it would be interesting to see the rise/fall in popularity of certain movie genres.
+While this plot would be interesting if it contained all genres in the database, including
+19 genres made the density plot seem crowded and difficult to read. Thus, it made sense to 
+only include the top 6 most common genres and group the rest into "Other". I used tidyverse 
+to lump the six most common genres.
+Lastly, I used colour instead of fill to make the plot legible and included all necessary 
+headings. Overall, I think this plot gives a good visual of genre trends over the years.
+
+```{r ggplot2}
+# PLOT 2: Heat Map
+genre_count <- df %>%
+  mutate(
+    month = factor(month, levels = month.name),
+    genre = fct_lump_n(as.factor(genre), n = 10)
+  ) %>%
+  count(genre, month) #the original plot looked pretty ugly so we need to focus on top 10
+#also we need count of movies per genre released each month
+
+p2 <- ggplot(data = genre_count, aes(x = month, y = genre)) +
+  geom_tile(aes(fill = n)) +
+  scale_fill_viridis_c(name = "Number of Movies") +
+  labs(
+    x = "Month",
+    y = "Genre",
+    title = "Movie Releases by Month and Genre From 1980 to 2020"
+  ) +
+  theme_minimal() +
+ theme(
+  axis.text.x = element_text(angle = 45, hjust = 1)) #tilt text for better look 
+
+p2
+```
+This is a heat map of movie releases by genre and month. My reasoning for creating this plot
+was to look at movie release trends within different genres by month. For instance,
+are more Horror movies released around Halloween? Or maybe more romance movies are released
+around Valentine's Day? For this plot, I had to take the count of movies in each genre 
+counted by month and then take the top 10 (too many genres overall). Then creating
+the scale fill took me a lot of time, but I was able to figure it out. Even though this plot was a bit 
+challenging to make (lots of errors), I still don't love the end result. 
+I don't love the color palette and the trends aren't as clear as I thought they would be, 
+but I think it's still overall a good visual. I did end up rotating the months on the x axis for
+readability. 
+
+```{r ggplot2}
+# PLOT 3: Box Plot
+grouped2 <- df %>%
+  mutate(genre = fct_lump_n(as.factor(genre), n = 10)) # top 10 genres
+
+p3 <- ggplot(data = grouped2, aes(x = genre, y = score)) +
+  geom_boxplot(aes(fill = genre)) +
+  labs(
+    fill = "Genre",
+    x = "Major Movie Genres",
+    y = "Audience Score",
+    title = "Audience Ratings by Genre"
+  ) +
+  theme_minimal() + 
+   theme(
+  axis.text.x = element_text(angle = 45, hjust = 1)) #tilt text for better look 
+
+p3
+```
+This is a box plot of major movie genres and information about the ranges of their audience
+ratings. I thought it would be interesting to learn more about how each genre is typically rated, 
+and what the range of those ratings look like. As a movie fan myself, I've heard that certain
+genres typically perform better than others and I made this box plot to test that theory myself.
+Making the box plot was not difficult, as we have done this in other assignments. I did only use
+the top 10 genres since there are a lot of different genres in this data set. I also tilted the 
+x axis text again. Overall, this plot did show me the information I was curious about. 
+
+```{r ggplot2}
+# PLOT 4: Bar Chart
+top_companies <- df %>%
+  group_by(company) %>%
+  summarise(total_rev = sum(revenue, na.rm = TRUE)) %>%
+  arrange(desc(total_rev)) %>%
+  slice_head(n = 10) #find out who's the top ten companies by revenue $$
+
+p4 <- ggplot(data = top_companies, aes(x = reorder(company, total_rev), #reorder
+                                       y = total_rev)) +
+  geom_col(aes(fill = company)) +
+  labs(
+    fill = "Company",
+    x = "Company Name",
+    y = "Total Revenue (Gross - Budget)",
+    title = "Top 10 Production Companies by Revenue"
+  ) +
+  theme_minimal() +
+  scale_fill_paletteer_d("rcartocolor::Antique") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+p4
+```
+This is a bar chart of the top 10 production companies based off revenue made from 1980
+to 2020. I chose this visual because I thought it would be interesting to see different
+industry giants and who's dominating. I decided to first group the top ten companies
+by revenue and then create a ggplot (which we've done before) to display the relation.
+I color-coded each company and tilted the text to make the visual readible. I also 
+ordered the bar chart for quick analysis on who's making the most/least revenue. 
+
+```{r ggplot2}
+# PLOT 5: Line Chart
+company_rev <- df %>%
+  filter(!is.na(revenue)) %>%
+  group_by(company,year) %>%
+  summarise(total_rev = sum(revenue), .groups = "drop") 
+#so here we need the summary of each company's revenue
+#originally, I didn't realize I needed to filter this but without it, it 
+#just plots each individual point of revenue for each movie
+
+top_companies <- company_rev %>%
+  group_by(company) %>%
+  summarise(total = sum(total_rev)) %>%
+  slice_max(total, n = 5) %>%
+  pull(company)
+#and then using that info, we take the top 5 companies (like before) because there are way too many companies
+
+company_rev <- company_rev %>%
+  filter(company %in% top_companies) #then we add the top companies into that filtered revenue
+
+p5 <- ggplot(data = company_rev, aes(x = year, y = total_rev)) +
+  geom_line(aes(colour = company), alpha = 1, linewidth = .8) +
+  labs(
+    colour = "Production Company",
+    x = "Year",
+    y = "Revenue",
+    title = "Top 5 Production Companies' Revenue From 1980 to 2020"
+  ) +
+  theme_gray() + #dark theme for lighter colors
+  scale_colour_viridis_d(option = "turbo")
+
+p5 <- p5 + scale_x_continuous(breaks = seq(1980, 2020, by = 3))
+#when I showed this plot to a friend, they send it was hard to read so 
+#I think expanding the x axis will look better (3 years instead of 5)
+
+p5 
+```
+This is a line chart of the revenue of the top 5 production companies' revenue over the years.
+With the last plot, I got to learn about which companies were making the most revenue, but here
+I wanted to learn more about the lifespan of these companies. For instance, was Universal
+Pictures always making the most? Which companies were dominating and went down over the years? 
+I was especially interested in this information due to the growth of Netflix and how streaming
+platforms have changed the game. I did not, however, expect this plot to take this much effort. 
+I had to group the revenue made by each company and then again create the top 5 companies based off revenue. 
+Then, I used a dark theme so that all colors can be clearly seen. I also changed the x axis to display
+every 3 years since the lines were so condensed. I am very satisfied with this end result
+and happy I had a second pair of eyes look at this for aesthetics. 
+
+```{r ggplot2}
+# PLOT 6: Faceted Scatter Plot
+facet_df <- df %>% #save into new df (just in case)
+  mutate(
+    decade = paste0(floor(year / 10) * 10, "s"), #decades are every 10 years
+    #I know 2020 only has one year but listen, it is what it is
+    genre = fct_lump_n(as.factor(genre), n = 10)) %>%
+  filter(!is.na(revenue), !is.na(year)) #coloring by genre so take top genres based off revenue
+#same as we did for companies
+    
+p6 <- ggplot(data = facet_df, aes(x = year, y = revenue)) +
+  geom_point(aes(colour = genre,
+                 text = paste(
+                   "Movie:", name,
+                   "<br>Genre:", genre,
+                   "<br>Revenue:", scales::dollar(revenue)),#for later- trust the process
+                 alpha=.4)) + #alpha lower to see overlapping points
+  facet_wrap(~ decade, scales = "free_x") + #we want each x axis to show ONLY years within decade
+  scale_x_continuous(breaks = seq(1980, 2020, by = 2)) + #show by 2 (similar as last vis) 
+  labs(
+    colour = "Genre",
+    x = "Year",
+    y = "Revenue",
+    title = "Revenue of Different Movies in Each Decade"
+  ) +
+  theme_minimal() +
+  scale_colour_paletteer_d("rcartocolor::Antique")
+
+p6
+```
+```{r ggplot2-interactive}
+# EXTRA: Interactive Plotly of Plot 6
+library(plotly)
+p7 <- ggplotly(p6, tooltip = "text") #this is what text was for
+
+p7
+```
+Okay, so I know that creating an Interactive Plotly was not required for the final, BUT I really wanted to 
+create a faceted scatter plot of different movies' revenue in each decade to see what were the top
+grossing movies in each decade. Using a regular faceted scatter plot, I could not make the colors
+be the different movies (too many options), so I needed a tool tip. This is my major visual and what I 
+was most interested in, so I think it was worth the extra step. 
+For this masterpiece, I had to create facets of each decade, which I did by taking every 10 years
+and adding an "s". Then, I took the top 10 genres and grouped them by who made the most revenue. This was
+pretty straight forward since I've been using lump throughout this project. I then created the faceted scatter
+plot, which we have done for other assignments. 
+In preparation of the plotly, I created my tooltip ahead of time with movie, genre, and revenue information.
+Then I just converted to plotly and defined my tooltip. I am VERY happy with this last visual because
+I think it ties in so many different things I learned this semester. Plus, it's interesting!
