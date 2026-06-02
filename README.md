@@ -82,33 +82,35 @@ The dashboard was built using **Shiny Dashboard**, **ggplot2**, and interactive 
 
 ### Interactive Dashboard
 
-![Dashboard](dashboard-preview.png)
+![Dashboard](Dashboard.png)
 
-### Movie Revenue by Decade
+### Revenue of Different Movies in Each Decade
 
-![Revenue by Decade](revenue-decade-scatterplot.png)
+![Revenue by Decade](PLOT1.png)
 
-### Top Production Companies by Revenue
+### Top 10 Production Companies by Revenue
 
-![Top Production Companies](top-production-companies.png)
+![Top Production Companies](PLOT2.png)
 
-### Production Company Revenue Trends
+### Top 5 Production Companies' Revenue From 1980 to 2020
 
-![Revenue Trends](production-revenue-trends.png)
+![Production Revenue Trends](PLOT3.png)
 
-### Genre Trends Over Time
+### Prevalence in Major Movie Genres From 1980 to 2020
 
-![Genre Density](genre-density.png)
+![Genre Trends](PLOT4.png)
 
-### Movie Release Heatmap
+### Movie Releases by Month and Genre
 
-![Heatmap](genre-release-heatmap.png)
+![Release Heatmap](PLOT5.png)
 
 ### Audience Ratings by Genre
 
-![Ratings](movie-ratings-boxplot.png)
+![Audience Ratings](PLOT6.png)
 
----
+### Interactive Revenue Plot
+
+![Interactive Revenue Plot](PLOTbonus.png)---
 
 ## Tools Used
 
