@@ -80,37 +80,39 @@ The dashboard was built using **Shiny Dashboard**, **ggplot2**, and interactive 
 
 ## Dashboard Preview
 
-### Interactive Dashboard
+### Interactive Dashboar
 
-![Dashboard](Dashboard%281%29.png)
+### How Has the Movie Industry Shifted Over the Years?
+
+![Dashboard](Dashboard.png)
 
 ### Prevalence in Major Movie Genres From 1980 to 2020
 
-![Genre Trends](PLOT4%281%29.png)
+![Prevalence in Major Movie Genres From 1980 to 2020](PLOT1.png)
 
-### Movie Releases by Month and Genre
+### Movie Releases by Month and Genre From 1980 to 2020
 
-![Release Heatmap](PLOT5%281%29.png)
+![Movie Releases by Month and Genre From 1980 to 2020](PLOT2.png)
 
 ### Audience Ratings by Genre
 
-![Audience Ratings](PLOT6%281%29.png)
+![Audience Ratings by Genre](PLOT3.png)
 
 ### Top 10 Production Companies by Revenue
 
-![Top Production Companies](PLOT2%281%29.png)
+![Top 10 Production Companies by Revenue](PLOT4.png)
 
 ### Top 5 Production Companies' Revenue From 1980 to 2020
 
-![Production Revenue Trends](PLOT3%281%29.png)
+![Top 5 Production Companies' Revenue From 1980 to 2020](PLOT5.png)
 
 ### Revenue of Different Movies in Each Decade
 
-![Revenue by Decade](PLOT1%281%29.png)
+![Revenue of Different Movies in Each Decade](PLOT6.png)
 
-### Interactive Revenue Plot
+### Interactive Revenue of Different Movies in Each Decade
 
-![Interactive Revenue Plot](PLOTbonus%281%29.png)
+![Interactive Revenue of Different Movies in Each Decade](PLOTbonus.png)
 
 ## Tools Used
 
