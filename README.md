@@ -80,7 +80,7 @@ The dashboard was built using **Shiny Dashboard**, **ggplot2**, and interactive 
 
 ## Dashboard Preview
 
-### Interactive Dashboar
+### Interactive Dashboard
 
 ### How Has the Movie Industry Shifted Over the Years?
 
